@@ -7,6 +7,6 @@ class UserRequest:
 
 
 @strawberry.type
-class UserResponse:
+class User:
     id: int
     username: str
