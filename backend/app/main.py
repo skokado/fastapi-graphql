@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from strawberry.fastapi import GraphQLRouter
 
-from .schemas import graphql_schema
+from .graphql import graphql_schema
 from .dependencies import get_context
 
 app = FastAPI(title="Chat App with FastAPI", debug=True)

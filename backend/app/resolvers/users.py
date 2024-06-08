@@ -5,7 +5,7 @@ import strawberry
 
 from ..models import User as UserModel
 from ..usecases import users as usecase
-from ..schemas.graphql.user_schema import UserRequest
+from ..graphql.schemas.user_schema import UserRequest
 
 
 async def get(info: strawberry.Info, user_id: int):

@@ -4,7 +4,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.dependencies import get_db
-from app.schemas.graphql.user_schema import UserRequest
+from app.graphql.schemas.user_schema import UserRequest
 
 from ..models import User
 

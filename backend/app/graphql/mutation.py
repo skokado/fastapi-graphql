@@ -1,7 +1,7 @@
 import strawberry
 
-from .user_schema import UserResponse
-from ...resolvers import users as users_resolver
+from .schemas.user_schema import UserResponse
+from ..resolvers import users as users_resolver
 
 
 @strawberry.type
