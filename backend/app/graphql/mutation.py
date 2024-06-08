@@ -14,11 +14,14 @@ class Mutation:
     @strawberry.mutation
     async def post_dm(self, data: DirectMessageRequest, info: strawberry.Info) -> DirectMessage:
         new_dm = await usecase.create_dm(data, info.context.db)
-        await direct_message_subscriptions.publish(new_dm)
-        return DirectMessage(
+
+        dm = DirectMessage(
             id=new_dm.id,
             created_at=new_dm.created_at,
             receiver_id=new_dm.receiver_id,
             sender_id=new_dm.sender_id,
             text=new_dm.text,
         )
+
+        await direct_message_subscriptions.publish(dm, info.context.redis)
+        return dm
