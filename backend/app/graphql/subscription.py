@@ -2,7 +2,7 @@ import asyncio
 import dataclasses
 from datetime import datetime
 import json
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Optional
 
 import redis.asyncio as redis
 import strawberry
@@ -23,10 +23,9 @@ class Subscription:
     count = strawberry.subscription(resolver=count_resolver)
 
     @strawberry.subscription
-    async def subscribe_dm(self, receiver_id: int, sender_id: int, info: strawberry.Info) -> AsyncGenerator[DirectMessage, None]:
+    async def subscribe_dm(self, receiver_id: int, sender_id: int, info: strawberry.Info) -> AsyncGenerator[Optional[DirectMessage], None]:
+        yield None
         last_message = await get_latest_message(receiver_id, sender_id, info.context.db)
-        if last_message:
-            yield last_message
 
         async for message in direct_message_subscriptions.subscribe(info.context.redis, last_message.id):
             data = json.loads(message["data"])

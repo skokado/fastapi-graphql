@@ -10,12 +10,6 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-const SUBSCRIPTION = gql`
-  subscription {
-    count
-  }
-`;
-
 const ChatBox = () => {
 
   const [ inputText, setInputText ] = useState("");
@@ -30,19 +24,38 @@ const ChatBox = () => {
     }
   }
 `)
-
   // sample: countSubscription
   const [ subscribedCounts, setSubscribedCounts ] = useState([])
   const onCountChange = (newCount) => {
     setSubscribedCounts([newCount, ...subscribedCounts])
   }
-
-  const countSubscription = useSubscription(SUBSCRIPTION, {
-    onData: ({ data }) => {onCountChange(data.data.count)}
+  const countSubscription = useSubscription(gql`
+    subscription {
+      count
+    }
+  `, {
+    onData: ({ data }) => onCountChange(data.data.count)
   })
 
-  if (loading || countSubscription.loading) return <p>Loading...</p>;
-  const messages = data.getMessages
+  // Message subscription
+  const [ subscribedMessages, setSubscribedMessages  ] = useState([])
+  const onMessageSubscribe = (newMessage) => {
+    if (newMessage === null) return;
+    setSubscribedMessages([newMessage, ...subscribedMessages])
+  }
+  const messageSubscription = useSubscription(gql`
+    subscription {
+      subscribeDm(receiverId: 1, senderId: 2) {
+        id
+        createdAt
+        text
+      }
+    }
+  `, {
+    onData: ({ data }) => onMessageSubscribe(data.data.subscribeDm)
+  })
+
+  if (loading || countSubscription.loading || messageSubscription.loading) return <p>Loading...</p>;
 
   const handleChange = (message) => {
     setInputText(message);
@@ -76,7 +89,20 @@ const ChatBox = () => {
         borderRadius="lg"
       >
         <Text>{subscribedCounts}</Text>
-        {messages.map(message => {
+        {/* Messages will be displayed after opened page */}
+        {subscribedMessages.map(message => {
+          const isMine = message.senderId === 1;
+          const alignSelf = isMine ? "flex-end" : "flex-start";
+          const messageBgColor = isMine ? "blue.100" : "gray.200";
+
+          return (
+            <Box  key={message.id} alignSelf={alignSelf} bg={messageBgColor} py={4} px={6} borderRadius={18}>
+              <Text>{message.text}</Text>
+            </Box>
+          )
+        })}
+
+        {data.getMessages.map(message => {
           const isMine = message.senderId === 1;
           const alignSelf = isMine ? "flex-end" : "flex-start";
           const messageBgColor = isMine ? "blue.100" : "gray.200";
