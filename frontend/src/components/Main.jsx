@@ -37,7 +37,8 @@ const Main = () => {
 
           <SimpleGrid columns={1} spacing={2}>
             {users.map(( user, id ) => {
-              return user.username !== "Bob" && <div key={user.id}>
+              // You are Alice.
+              return user.username !== "Alice" && <div key={user.id}>
                 <Grid templateColumns="repeat(10, 1fr)" gap={2} mb={2}>
                   <GridItem colStar={1} h="100%">
                     <Avatar size="sm" name={user.username} />

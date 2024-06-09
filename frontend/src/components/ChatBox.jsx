@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQuery, gql } from '@apollo/client';
 
 import {
   Box,
@@ -14,6 +15,19 @@ const ChatBox = () => {
   const [ message, setMessage ] = useState("");
   const [ buttonActive, setButtonActive ] = useState(false);
 
+  const { loading, error, data } = useQuery(gql`
+  {
+    getMessages(receiverId: 1, senderId: 2) {
+      id
+      createdAt
+      text
+    }
+  }
+`)
+  if (loading) return <p>Loading...</p>;
+
+  const messages = data.getMessages
+
   const handleChange = (message) => {
     setMessage(message);
     setButtonActive(message.length > 0);
@@ -21,7 +35,6 @@ const ChatBox = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(message)
     setButtonActive(false);
     setMessage("");
   }
@@ -46,14 +59,17 @@ const ChatBox = () => {
         borderWidth={1}
         borderRadius="lg"
       >
-        {/* Dummy Messages */}
-        <Box alignSelf="flex-start" bg="gray.200" py={4} px={6} borderRadius={18}>
-          <Text>Hello!</Text>
-        </Box>
-        <Box alignSelf="flex-end" bg="blue.100" py={4} px={6} borderRadius={18}>
-          <Text>Hi there!</Text>
-        </Box>
-        {/* Add more messages here */}
+        {messages.map(message => {
+          const isMine = message.senderId === 1;
+          const alignSelf = isMine ? "flex-end" : "flex-start";
+          const messageBgColor = isMine ? "blue.100" : "gray.200";
+
+          return (
+            <Box  key={message.id} alignSelf={alignSelf} bg={messageBgColor} py={4} px={6} borderRadius={18}>
+              <Text>{message.text}</Text>
+            </Box>
+          )
+        })}
       </VStack>
       <Flex as="form" mt={4} onSubmit={(e) => handleSubmit(e)}>
         <Input

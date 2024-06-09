@@ -9,7 +9,7 @@ const Sidebar = () => {
       h="90vh"
     >
       <Flex py={2} justifyContent={"center"}>
-        <Avatar bg="tan" size="md" name="User Name" />
+        <Avatar bg="tan" size="md" name="Alice" />
       </Flex>
 
       <Divider my={4} />
