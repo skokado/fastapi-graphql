@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { gql, useQuery, useSubscription } from '@apollo/client';
 
 import {
   Box,
@@ -10,12 +10,18 @@ import {
   Text,
 } from '@chakra-ui/react';
 
+const SUBSCRIPTION = gql`
+  subscription {
+    count
+  }
+`;
+
 const ChatBox = () => {
 
-  const [ message, setMessage ] = useState("");
+  const [ inputText, setInputText ] = useState("");
   const [ buttonActive, setButtonActive ] = useState(false);
 
-  const { loading, error, data } = useQuery(gql`
+  const { loading, data } = useQuery(gql`
   {
     getMessages(receiverId: 1, senderId: 2) {
       id
@@ -24,19 +30,29 @@ const ChatBox = () => {
     }
   }
 `)
-  if (loading) return <p>Loading...</p>;
 
+  // sample: countSubscription
+  const [ subscribedCounts, setSubscribedCounts ] = useState([])
+  const onCountChange = (newCount) => {
+    setSubscribedCounts([newCount, ...subscribedCounts])
+  }
+
+  const countSubscription = useSubscription(SUBSCRIPTION, {
+    onData: ({ data }) => {onCountChange(data.data.count)}
+  })
+
+  if (loading || countSubscription.loading) return <p>Loading...</p>;
   const messages = data.getMessages
 
   const handleChange = (message) => {
-    setMessage(message);
+    setInputText(message);
     setButtonActive(message.length > 0);
   }
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setButtonActive(false);
-    setMessage("");
+    setInputText("");
   }
 
   return (
@@ -59,6 +75,7 @@ const ChatBox = () => {
         borderWidth={1}
         borderRadius="lg"
       >
+        <Text>{subscribedCounts}</Text>
         {messages.map(message => {
           const isMine = message.senderId === 1;
           const alignSelf = isMine ? "flex-end" : "flex-start";
@@ -75,7 +92,7 @@ const ChatBox = () => {
         <Input
           mr={2}
           borderRadius="lg"
-          value={message}
+          value={inputText}
           onChange={(e) => handleChange(e.target.value)}
         />
         <Button type="submit" colorScheme="blue" borderRadius="lg"
