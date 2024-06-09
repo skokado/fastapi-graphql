@@ -1,23 +1,24 @@
-import { Avatar, Box, Divider, Flex, Grid, GridItem, SimpleGrid, Text, useRadio } from "@chakra-ui/react"
+import { Avatar, Box, Divider, Flex, Grid, GridItem, SimpleGrid, Text } from "@chakra-ui/react"
+import { useQuery, gql } from '@apollo/client';
 
 import ChatBox from "./ChatBox"
 
+const LIST_USERS = gql`
+  query {
+    listUsers {
+      id
+      username
+    }
+  }
+`
+
+
 const Main = () => {
 
-  const users = [
-    {
-      id: 1,
-      username: "Alice"
-    },
-    {
-      id: 2,
-      username: "Bob"
-    },
-    {
-      id: 4,
-      username: "Chris"
-    },
-  ]
+  const { loading, error, data } = useQuery(LIST_USERS);
+  if (loading) return <p>Loading...</p>;
+
+  const users = data.listUsers;
 
   return (
     <div>

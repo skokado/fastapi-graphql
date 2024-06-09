@@ -1,4 +1,4 @@
-import { Box, Center, ChakraProvider, Square, Text } from '@chakra-ui/react'
+import { Box, ChakraProvider } from '@chakra-ui/react'
 
 import { extendTheme, Flex } from '@chakra-ui/react'
 
