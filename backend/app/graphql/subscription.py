@@ -25,7 +25,8 @@ class Subscription:
     @strawberry.subscription
     async def subscribe_dm(self, receiver_id: int, sender_id: int, info: strawberry.Info) -> AsyncGenerator[DirectMessage, None]:
         last_message = await get_latest_message(receiver_id, sender_id, info.context.db)
-        yield last_message
+        if last_message:
+            yield last_message
 
         async for message in direct_message_subscriptions.subscribe(info.context.redis, last_message.id):
             data = json.loads(message["data"])
