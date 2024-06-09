@@ -13,7 +13,7 @@ class DirectMessageRequest:
 @strawberry.type
 class DirectMessage:
     id: int
-    created_at: datetime
+    created_at: str  # TODO How to handle datetime in Redis Broker?
 
     receiver_id: int
     sender_id: int
