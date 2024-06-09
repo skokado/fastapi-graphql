@@ -1,6 +1,7 @@
 from typing import Optional
 
 from fastapi import Depends
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.dependencies import get_db
@@ -10,13 +11,16 @@ from ..models import User
 
 
 async def list(prefix: Optional[str] = None, db: Session = Depends(get_db)) -> list[User]:
+    stmt = select(User)
     if prefix:
-        return db.query(User).filter(User.username.startswith(prefix)).all()
-    return db.query(User).all()
+        stmt = stmt.filter(User.username.startswith(prefix))
+        return db.scalars(stmt).all()
+    return db.scalars(stmt).all()
 
 
 async def get(user_id: int, db: Session = Depends(get_db)) -> Optional[User]:
-    return db.query(User).get(user_id)
+    stmt = select(User).where(User.id == user_id)
+    return db.scalar(stmt)
 
 
 async def create(data: UserRequest, db: Session = Depends(get_db)) -> User:

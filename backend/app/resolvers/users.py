@@ -1,6 +1,5 @@
 from typing import Optional
 
-from fastapi import HTTPException
 import strawberry
 
 from ..models import User as UserModel
@@ -8,10 +7,8 @@ from ..usecases import users as usecase
 from ..graphql.schemas.user_schema import UserRequest
 
 
-async def get(info: strawberry.Info, user_id: int):
+async def get(info: strawberry.Info, user_id: int) -> Optional[UserModel]:
     user = await usecase.get(user_id, info.context.db)
-    if not user:
-        raise HTTPException(404, detail="User not found")
     return user
 
 
