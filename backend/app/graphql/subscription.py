@@ -27,11 +27,15 @@ class Subscription:
         yield None
         last_message = await get_latest_message(receiver_id, sender_id, info.context.db)
 
-        async for message in direct_message_subscriptions.subscribe(info.context.redis, last_message.id):
+        async for message in direct_message_subscriptions.subscribe(info.context.redis, 0):
             data = json.loads(message["data"])
             dm = DirectMessage(**data)
-            dm.created_at = datetime.fromisoformat(dm.created_at)
-            yield dm
+            if any([
+                dm.receiver_id == receiver_id and dm.sender_id == sender_id,
+                dm.receiver_id == sender_id and dm.sender_id == receiver_id,
+            ]):
+                dm.created_at = datetime.fromisoformat(dm.created_at)
+                yield dm
 
 
 class DirectMessageSubscriptionBroker:

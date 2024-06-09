@@ -19,6 +19,7 @@ const ChatBox = () => {
   {
     getMessages(receiverId: 1, senderId: 2) {
       id
+      senderId
       createdAt
       text
     }
@@ -27,7 +28,7 @@ const ChatBox = () => {
   // sample: countSubscription
   const [ subscribedCounts, setSubscribedCounts ] = useState([])
   const onCountChange = (newCount) => {
-    setSubscribedCounts([newCount, ...subscribedCounts])
+    setSubscribedCounts([...subscribedCounts, newCount])
   }
   const countSubscription = useSubscription(gql`
     subscription {
@@ -47,6 +48,7 @@ const ChatBox = () => {
     subscription {
       subscribeDm(receiverId: 1, senderId: 2) {
         id
+        senderId
         createdAt
         text
       }
