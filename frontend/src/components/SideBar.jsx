@@ -6,9 +6,7 @@ const Sidebar = () => {
   return (
     <Box bg="blue.400" color="white"
       borderRadius={8}
-      mt={6} ml={4}
       p={4}
-      w="20%" maxWidth="150px"
       h="90vh"
     >
       <Flex py={2} justifyContent={"center"}>

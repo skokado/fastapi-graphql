@@ -16,8 +16,12 @@ const theme = extendTheme({
 function App() {
   return <ChakraProvider theme={theme}>
     <Flex>
-      <SideBar flex="1" />
-      <Main flex="1" />
+      <Box w="20%" maxWidth="150px" h="97vh" mt="3vh" ml={6}>
+        <SideBar flex="1" />
+      </Box>
+      <Box w="80%" h="97vh" mt="3vh" ml={10}>
+        <Main flex="1" />
+      </Box>
     </Flex>
 
   </ChakraProvider>
