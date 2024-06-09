@@ -1,35 +1,26 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Box, Center, ChakraProvider, Square, Text } from '@chakra-ui/react'
+
+import { extendTheme, Flex } from '@chakra-ui/react'
+
+import SideBar from './components/SideBar'
+import Main from './components/Main'
+
+import "./style.css"
+
+const theme = extendTheme({
+  fonts: {
+    body: `'Noto Sans JP', sans-serif`,
+  },
+})
 
 function App() {
-  const [count, setCount] = useState(0)
+  return <ChakraProvider theme={theme}>
+    <Flex>
+      <SideBar flex="1" />
+      <Main flex="1" />
+    </Flex>
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  </ChakraProvider>
 }
 
 export default App
