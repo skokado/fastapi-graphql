@@ -28,7 +28,7 @@ const Main = () => {
           flex="1"
           borderWidth="1px" borderRadius={8}
           p={4}
-          maxWidth="40%"
+          maxWidth="30%"
           maxHeight={400}
         >
           <Box mb={4}>
@@ -39,7 +39,7 @@ const Main = () => {
             {users.map(( user, id ) => {
               // You are Alice.
               return user.username !== "Alice" && <div key={user.id}>
-                <Grid templateColumns="repeat(10, 1fr)" gap={2} mb={2}>
+                <Grid templateColumns="repeat(10, 1fr)" gap={2} mb={2} backgroundColor={user.username === "Bob" ? "gray.100" : "white"}>
                   <GridItem colStar={1} h="100%">
                     <Avatar size="sm" name={user.username} />
                   </GridItem>
